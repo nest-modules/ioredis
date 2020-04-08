@@ -39,7 +39,7 @@
     "@typescript-eslint/parser": "2.27.0",
     "husky": "4.2.3",
     "ioredis": "4.16.1",
-    "jest": "25.2.7",
+    "jest": "25.3.0",
     "lint-staged": "10.1.2",
     "prettier": "2.0.4",
     "reflect-metadata": "0.1.13",
