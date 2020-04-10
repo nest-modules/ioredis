@@ -37,7 +37,7 @@
     "@types/jest": "25.2.1",
     "@typescript-eslint/eslint-plugin": "2.27.0",
     "@typescript-eslint/parser": "2.27.0",
-    "husky": "4.2.4",
+    "husky": "4.2.5",
     "ioredis": "4.16.1",
     "jest": "25.3.0",
     "lint-staged": "10.1.3",
