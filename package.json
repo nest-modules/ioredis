@@ -40,7 +40,7 @@
     "husky": "4.2.5",
     "ioredis": "4.16.2",
     "jest": "25.3.0",
-    "lint-staged": "10.1.4",
+    "lint-staged": "10.1.5",
     "prettier": "2.0.4",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
