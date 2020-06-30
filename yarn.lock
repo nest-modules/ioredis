@@ -593,10 +593,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ioredis@4.16.7":
-  version "4.16.7"
-  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.16.7.tgz#2620a48c26faeb4b65f2ef7501ed6e515d8a3327"
-  integrity sha512-gc0g0OlBxc/Mlhutv5Njkm3A4m5oZXq8gCeEGOt2c4p4ZIYw9dotYjg6z8nSsxOH9KnKkjWUzg0oGCAqtnGFIg==
+"@types/ioredis@4.17.0":
+  version "4.17.0"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.17.0.tgz#25fea62388f546958d53e31bbb6284b60c793e60"
+  integrity sha512-2wmT+lB9JAHSYlBrmJGeYDQ4cGlIgxmaC3Bv85LJws/G/OkoFoxPezhMqtTp0JMCgsMadIoI9c43QvRz8WKLSw==
   dependencies:
     "@types/node" "*"
 
