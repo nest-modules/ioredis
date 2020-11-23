@@ -30,9 +30,9 @@
     "ioredis": "^4.0.0"
   },
   "devDependencies": {
-    "@nestjs/common": "7.5.3",
-    "@nestjs/core": "7.5.3",
-    "@nestjs/testing": "7.5.3",
+    "@nestjs/common": "7.5.5",
+    "@nestjs/core": "7.5.5",
+    "@nestjs/testing": "7.5.5",
     "@types/ioredis": "4.17.8",
     "@types/jest": "26.0.15",
     "@typescript-eslint/eslint-plugin": "4.8.1",
