@@ -644,10 +644,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ioredis@4.19.4":
-  version "4.19.4"
-  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.19.4.tgz#81fbdae1e0abe83cee9832b51e46bb692070c30d"
-  integrity sha512-NrXnrymvlUioki2hoFCGakAf/1ej/scdI+ViuTchFmc8KL8DHM2uMcxWx5foKd2C4IkXswX46yoMsexvnr9kPg==
+"@types/ioredis@4.22.1":
+  version "4.22.1"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.22.1.tgz#e03b064189ab20c9edc95ccde6228d2bf81f538c"
+  integrity sha512-GxXT828fkvBeThO68ZJg8cD2haqea5ANBJaxA+UZqLranNkEnQ8N7QLPtykwWbN/sRQz75O7kj+PNmCKF4CEKw==
   dependencies:
     "@types/node" "*"
 
@@ -1683,6 +1683,13 @@ debug@^4.2.0:
   dependencies:
     ms "2.1.2"
 
+debug@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
+  integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
+  dependencies:
+    ms "2.1.2"
+
 decamelize-keys@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/decamelize-keys/-/decamelize-keys-1.1.0.tgz#d171a87933252807eb3cb61dc1c1445d078df2d9"
@@ -2547,13 +2554,13 @@ interpret@^1.0.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.4.0.tgz#665ab8bc4da27a774a40584e812e3e0fa45b1a1e"
   integrity sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==
 
-ioredis@4.22.0:
-  version "4.22.0"
-  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.22.0.tgz#a2e18a29300ffb759670d7ed7023fcf6592031a2"
-  integrity sha512-mtC+jNFMPRxReWx0HodDbcwj34Gj5pK/P4+aE6Nh0pdqgtZKvxUh4z2lVtLjqnRIvMhKaBnIgMYFR8qH/xtttA==
+ioredis@4.24.4:
+  version "4.24.4"
+  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.24.4.tgz#2f3cc03c5bfc75e13141459418bb1bd64ba1c7cf"
+  integrity sha512-v28xxBENyTmReC6lVTL7EkAPjVF8cuGtDEjGDi1Z2n7htsC2WdiDceZrCIPeuPiLa6kDFWHb1Y8O0upZROsMgA==
   dependencies:
     cluster-key-slot "^1.1.0"
-    debug "^4.1.1"
+    debug "^4.3.1"
     denque "^1.1.0"
     lodash.defaults "^4.2.0"
     lodash.flatten "^4.4.0"
@@ -2561,7 +2568,7 @@ ioredis@4.22.0:
     redis-commands "1.7.0"
     redis-errors "^1.2.0"
     redis-parser "^3.0.0"
-    standard-as-callback "^2.0.1"
+    standard-as-callback "^2.1.0"
 
 ip-regex@^2.1.0:
   version "2.1.0"
@@ -4889,10 +4896,10 @@ stack-utils@^2.0.2:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-standard-as-callback@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/standard-as-callback/-/standard-as-callback-2.0.1.tgz#ed8bb25648e15831759b6023bdb87e6b60b38126"
-  integrity sha512-NQOxSeB8gOI5WjSaxjBgog2QFw55FV8TkS6Y07BiB3VJ8xNTvUYm0wl0s8ObgQ5NhdpnNfigMIKjgPESzgr4tg==
+standard-as-callback@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/standard-as-callback/-/standard-as-callback-2.1.0.tgz#8953fc05359868a77b5b9739a665c5977bb7df45"
+  integrity sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==
 
 standard-version@9.1.1:
   version "9.1.1"
