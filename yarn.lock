@@ -871,10 +871,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ioredis@4.26.4":
-  version "4.26.4"
-  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.26.4.tgz#a2b1ed51ddd2c707d7eaac5017cc34a0fe51558a"
-  integrity sha512-QFbjNq7EnOGw6d1gZZt2h26OFXjx7z+eqEnbCHSrDI1OOLEgOHMKdtIajJbuCr9uO+X9kQQRe7Lz6uxqxl5XKg==
+"@types/ioredis@4.28.2":
+  version "4.28.2"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.28.2.tgz#7ff68944cbb58afefb2a1d8b250ebf48760e93c9"
+  integrity sha512-kOCG4ExodOAoslFjsUzwAK1fxqVRx3JX5m7lm3MkWf5WkDwNTtXBtlBig6cQyFwS7P7TPaTWRreQaMwl7e1FFA==
   dependencies:
     "@types/node" "*"
 
@@ -2433,16 +2433,17 @@ interpret@^1.0.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.4.0.tgz#665ab8bc4da27a774a40584e812e3e0fa45b1a1e"
   integrity sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==
 
-ioredis@4.27.3:
-  version "4.27.3"
-  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.27.3.tgz#4a020c9056bf4e016c476910fb59620a0d899654"
-  integrity sha512-eAirtUIljFkHJwuKQhbGajVrdCUMNKRuOrhzRFeYZRvXnLs4757Oss1S8aiheB4NSO1RsLeG+2RUjY/0/XiSig==
+ioredis@4.28.2:
+  version "4.28.2"
+  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.28.2.tgz#493ccd5d869fd0ec86c96498192718171f6c9203"
+  integrity sha512-kQ+Iv7+c6HsDdPP2XUHaMv8DhnSeAeKEwMbaoqsXYbO+03dItXt7+5jGQDRyjdRUV2rFJbzg7P4Qt1iX2tqkOg==
   dependencies:
     cluster-key-slot "^1.1.0"
     debug "^4.3.1"
     denque "^1.1.0"
     lodash.defaults "^4.2.0"
     lodash.flatten "^4.4.0"
+    lodash.isarguments "^3.1.0"
     p-map "^2.1.0"
     redis-commands "1.7.0"
     redis-errors "^1.2.0"
@@ -3243,6 +3244,11 @@ lodash.flatten@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
   integrity sha1-8xwiIlqWMtK7+OSt2+8kCqdlph8=
+
+lodash.isarguments@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz#2f573d85c6a24289ff00663b491c1d338ff3458a"
+  integrity sha1-L1c9hcaiQon/AGY7SRwdM4/zRYo=
 
 lodash.ismatch@^4.4.0:
   version "4.4.0"
