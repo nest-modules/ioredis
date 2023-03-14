@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RedisModule } from './redis.module';
 import { getRedisConnectionToken } from './redis.utils';
 import { InjectRedis } from './redis.decorators';
-import { Redis as RedisType } from './redis.interfaces';
 
 describe('RedisModule', () => {
   it('Instance Redis', async () => {
@@ -53,7 +52,7 @@ describe('RedisModule', () => {
 
     @Injectable()
     class TestProvider {
-      constructor(@InjectRedis() private readonly redis: RedisType) {}
+      constructor(@InjectRedis() private readonly redis: Redis) {}
 
       getClient() {
         return this.redis;
