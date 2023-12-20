@@ -1,5 +1,5 @@
 import { RedisModuleOptions } from './redis.interfaces';
-import * as Redis from 'ioredis';
+import Redis from 'ioredis';
 import {
   REDIS_MODULE_CONNECTION,
   REDIS_MODULE_CONNECTION_TOKEN,
