@@ -74,7 +74,8 @@ export class AppModule {}
 
 ```ts
 import { Controller, Get } from '@nestjs/common';
-import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
 
 @Controller()
 export class AppController {
