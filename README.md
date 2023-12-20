@@ -73,7 +73,7 @@ export class AppModule {}
 #### InjectRedis(connection?)
 
 ```ts
-import { Controller, Get, } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 
 @Controller()
