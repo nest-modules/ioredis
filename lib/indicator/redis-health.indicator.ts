@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { HealthIndicator, HealthIndicatorResult, HealthCheckError } from '@nestjs/terminus';
 import Redis from 'ioredis';
 
+import { REDIS_HEALTH_INDICATOR } from '../redis.constants';
+
 @Injectable()
 export class RedisHealthIndicator extends HealthIndicator {
-  constructor(private readonly redis: Redis) {
+  constructor(@Inject(REDIS_HEALTH_INDICATOR) private readonly redis: Redis) {
     super();
   }
 
