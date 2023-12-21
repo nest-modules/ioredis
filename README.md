@@ -98,18 +98,17 @@ export class AppController {
 //health.module.ts
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
-import { RedisHealthModule, RedisHealthIndicator, } from '@nestjs-modules/ioredis';
+import { RedisHealthModule, } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [TerminusModule, RedisHealthModule],
-  controllers: [HealthController],
-  providers: [RedisHealthIndicator]
+  controllers: [HealthController]
 })
 export class HealthModule {}
 ```
 
 ```js
-//health.indicator.ts
+//health.controller.ts
 import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheckService,
