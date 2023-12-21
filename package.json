@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-modules/ioredis",
-  "version": "1.1.2",
+  "version": "1.2.3",
   "description": "Nest - a ioredis module (@ioredis)",
   "author": "Nest Modules TM",
   "private": false,
@@ -29,9 +29,13 @@
     "@nestjs/core": ">=6.7.0",
     "ioredis": ">=5.0.0"
   },
+  "optionalDependencies": {
+    "@nestjs/terminus": "10.2.0"
+  },
   "devDependencies": {
     "@nestjs/common": "10.3.0",
     "@nestjs/core": "10.3.0",
+    "@nestjs/terminus": "10.2.0",
     "@nestjs/testing": "10.3.0",
     "@types/jest": "29.5.11",
     "@typescript-eslint/eslint-plugin": "6.15.0",

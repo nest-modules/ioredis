@@ -92,6 +92,48 @@ export class AppController {
 }
 ```
 
+#### How to use the Redis indicator for the Terminus library?"
+
+```js
+//health.module.ts
+import { Module } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
+import { RedisHealthModule, } from '@nestjs-modules/ioredis';
+
+@Module({
+  imports: [TerminusModule, RedisHealthModule],
+  controllers: [HealthController]
+})
+export class HealthModule {}
+```
+
+```js
+//health.controller.ts
+import { Controller, Get } from '@nestjs/common';
+import {
+  HealthCheckService,
+  HealthCheck,
+  HealthCheckResult
+} from '@nestjs/terminus';
+import { RedisHealthIndicator } from './redis.health';
+
+@Controller('health')
+export class HealthController {
+  constructor(
+    private health: HealthCheckService,
+    private redis: RedisHealthIndicator,
+  ) {}
+
+  @Get()
+  @HealthCheck()
+  check(): Promise<HealthCheckResult> {
+    return this.health.check([
+      async () => this.redis.isHealthy('redis'),
+    ]);
+  }
+}
+```
+
 ## License
 
 MIT
