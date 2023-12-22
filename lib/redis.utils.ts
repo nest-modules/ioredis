@@ -15,13 +15,13 @@ export function getRedisConnectionToken(connection?: string): string {
 }
 
 export function createRedisConnection(options: RedisModuleOptions) {
-  const { type, options: commonOptions } = options;
+  const { type, options: commonOptions = {} } = options;
 
   switch (type) {
     case 'cluster':
       return new Redis.Cluster(options.nodes, commonOptions);
     case 'single':
-      const { url, options: { port, host } } = options;
+      const { url, options: { port, host } = {} } = options;
       const connectionOptions: RedisOptions = { ...commonOptions, port, host };
 
       return url ? new Redis(url, connectionOptions) : new Redis(connectionOptions);

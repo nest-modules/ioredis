@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "10.2.1",
+    "@nestjs-modules/ioredis": "2.0.0",
     "@nestjs/schematics": "10.0.3",
     "@nestjs/testing": "10.3.0",
     "@types/express": "4.17.21",
