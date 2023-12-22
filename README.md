@@ -30,6 +30,8 @@ yarn add @nestjs-modules/ioredis ioredis
 
 #### RedisModule.forRoot(options, connection?)
 
+##### Single Type (forRoot)
+
 ```ts
 import { Module } from '@nestjs/common';
 import { RedisModule } from '@nestjs-modules/ioredis';
@@ -38,9 +40,41 @@ import { AppController } from './app.controller';
 @Module({
   imports: [
     RedisModule.forRoot({
-      config: { 
-        url: 'redis://localhost:6379',
-      },
+      type: 'single',
+      url: 'redis://localhost:6379',
+    }),
+  ],
+  controllers: [AppController],
+})
+export class AppModule {}
+```
+
+##### Cluster Type (forRoot)
+
+```ts
+import { Module } from '@nestjs/common';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import { AppController } from './app.controller';
+
+@Module({
+  imports: [
+    RedisModule.forRoot({
+      type: 'cluster',
+      nodes: [
+        {
+          host: '127.0.0.1',
+          port: 6379
+        },
+        {
+          host: '127.0.0.2',
+          port: 6379
+        }
+      ],
+      options: {
+        redisOptions: {
+          password: '123456'
+        }
+      }
     }),
   ],
   controllers: [AppController],
@@ -49,6 +83,8 @@ export class AppModule {}
 ```
 
 #### RedisModule.forRootAsync(options, connection?)
+
+##### Single Type (forRootAsync)  
 
 ```ts
 import { Module } from '@nestjs/common';
@@ -59,9 +95,43 @@ import { AppController } from './app.controller';
   imports: [
     RedisModule.forRootAsync({
       useFactory: () => ({
-        config: { 
-          url: 'redis://localhost:6379',
-        },
+        type: 'single',
+        url: 'redis://localhost:6379',
+      }),
+    }),
+  ],
+  controllers: [AppController],
+})
+export class AppModule {}
+```
+
+##### Cluster Type (forRootAsync)  
+
+```ts
+import { Module } from '@nestjs/common';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import { AppController } from './app.controller';
+
+@Module({
+  imports: [
+    RedisModule.forRootAsync({
+      useFactory: () => ({
+        type: 'cluster',
+        nodes: [
+          {
+            host: '127.0.0.1',
+            port: 6379
+          },
+            {
+            host: '127.0.0.2',
+            port: 6379
+          }
+        ],
+        options: {
+          redisOptions: {
+            password: '123456'
+          }
+        }
       }),
     }),
   ],
@@ -73,9 +143,9 @@ export class AppModule {}
 #### InjectRedis(connection?)
 
 ```ts
+import Redis from 'ioredis';
 import { Controller, Get } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
-import Redis from 'ioredis';
 
 @Controller()
 export class AppController {

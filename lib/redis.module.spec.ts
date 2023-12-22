@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
+
+import { Injectable } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RedisModule } from './redis.module';
 import { getRedisConnectionToken } from './redis.utils';
@@ -9,7 +10,8 @@ describe('RedisModule', () => {
   it('Instance Redis', async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [RedisModule.forRoot({
-        config: {
+        type: 'single',
+        options: {
           host: '127.0.0.1',
           port: 6379,
           password: '123456',
@@ -28,7 +30,8 @@ describe('RedisModule', () => {
   it('Instance Redis client provider', async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [RedisModule.forRoot({
-        config: {
+        type: 'single',
+        options: {
           name: '1',
           host: '127.0.0.1',
           port: 6379,
@@ -61,7 +64,8 @@ describe('RedisModule', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [RedisModule.forRoot({
-        config: {
+        type: 'single',
+        options: {
           host: '127.0.0.1',
           port: 6379,
           password: '123456',
