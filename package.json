@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-modules/ioredis",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Nest - a ioredis module (@ioredis)",
   "author": "Nest Modules TM",
   "private": false,

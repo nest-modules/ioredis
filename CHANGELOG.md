@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/nest-modules/ioredis/compare/v2.0.0...v2.0.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* The 'port' and 'host' fields should no longer appear as mandatory ([a2d519a](https://github.com/nest-modules/ioredis/commit/a2d519a0f66ebf10be07373a9911b640752c2587))
+
 ## [2.0.0](https://github.com/nest-modules/ioredis/compare/v1.2.4...v2.0.0) (2023-12-22)
 
 
