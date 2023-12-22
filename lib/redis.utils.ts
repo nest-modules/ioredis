@@ -1,5 +1,5 @@
-import Redis from 'ioredis';
-import { RedisModuleOptions, RedisOptions } from './redis.interfaces';
+import Redis, { RedisOptions } from 'ioredis';
+import { RedisModuleOptions } from './redis.interfaces';
 import {
   REDIS_MODULE_CONNECTION,
   REDIS_MODULE_CONNECTION_TOKEN,
@@ -21,10 +21,13 @@ export function createRedisConnection(options: RedisModuleOptions) {
     case 'cluster':
       return new Redis.Cluster(options.nodes, commonOptions);
     case 'single':
-      const { url, port, host } = options;
-      const connectionOptions: RedisOptions = { ...commonOptions, url, port, host };
-      return new Redis(connectionOptions);
+      const { url, options: { port, host } } = options;
+      const connectionOptions: RedisOptions = { ...commonOptions, port, host };
+
+      return url ? new Redis(url, connectionOptions) : new Redis(connectionOptions);
     default:
       throw new Error('Invalid configuration');
   }
 }
+
+
