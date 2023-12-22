@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
+
+import { Injectable } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RedisModule } from './redis.module';
 import { getRedisConnectionToken } from './redis.utils';
@@ -9,7 +10,8 @@ describe('RedisModule', () => {
   it('Instance Redis', async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [RedisModule.forRoot({
-        config: {
+        type: 'single',
+        options: {
           host: '127.0.0.1',
           port: 6379,
           password: '123456',
@@ -26,21 +28,23 @@ describe('RedisModule', () => {
   });
 
   it('Instance Redis client provider', async () => {
+    const defaultConnection: string = 'default';
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [RedisModule.forRoot({
-        config: {
-          name: '1',
+        type: 'single',
+        options: {
           host: '127.0.0.1',
           port: 6379,
           password: '123456',
         }
       })],
-    }).compile();
+    },).compile();
 
     const app = module.createNestApplication();
     await app.init();
-    const redisClient = module.get(getRedisConnectionToken('1'));
-    const redisClientTest = module.get(getRedisConnectionToken('test'));
+    const redisClient = module.get(getRedisConnectionToken(defaultConnection));
+    const redisClientTest = module.get(getRedisConnectionToken(defaultConnection));
 
     expect(redisClient).toBeInstanceOf(Redis);
     expect(redisClientTest).toBeInstanceOf(Redis);
@@ -61,7 +65,8 @@ describe('RedisModule', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [RedisModule.forRoot({
-        config: {
+        type: 'single',
+        options: {
           host: '127.0.0.1',
           port: 6379,
           password: '123456',

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/nest-modules/ioredis/compare/v1.2.4...v2.0.0) (2023-12-22)
+
+
+### Features
+
+* add cluster support and foo samples ([ad220d7](https://github.com/nest-modules/ioredis/commit/ad220d7024a861d22d3efb0cf42c9358652d3cff))
+
+
+### Bug Fixes
+
+* Add two Redis instance options, one when a URL exists and one when it doesn't ([f5d1819](https://github.com/nest-modules/ioredis/commit/f5d1819387a05ddc0fc1c293b9bdccbaa8a28d56))
+
 ### [1.2.4](https://github.com/nest-modules/ioredis/compare/v1.2.3...v1.2.4) (2023-12-21)
 
 

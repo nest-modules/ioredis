@@ -1,9 +1,19 @@
 import { ModuleMetadata, Type } from '@nestjs/common/interfaces';
-import { RedisOptions } from 'ioredis';
+import { RedisOptions, ClusterOptions, ClusterNode } from 'ioredis';
 
-export interface RedisModuleOptions {
-  config: RedisOptions & { url?: string };
+export interface RedisSingleOptions {
+  type: 'single';
+  url?: string;
+  options?: RedisOptions;
 }
+
+export interface RedisClusterOptions {
+  type: 'cluster';
+  nodes: ClusterNode[];
+  options?: ClusterOptions;
+}
+
+export type RedisModuleOptions = RedisSingleOptions | RedisClusterOptions;
 
 export interface RedisModuleOptionsFactory {
   createRedisModuleOptions(): Promise<RedisModuleOptions> | RedisModuleOptions;
