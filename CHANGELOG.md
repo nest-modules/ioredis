@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/nest-modules/ioredis/compare/v2.0.1...v2.0.2) (2024-02-24)
+
+
+### Bug Fixes
+
+* bugfix health provider ([82ae2d3](https://github.com/nest-modules/ioredis/commit/82ae2d3b024836e51e579c58173ee5085410ab9f))
+
 ### [2.0.1](https://github.com/nest-modules/ioredis/compare/v2.0.0...v2.0.1) (2023-12-22)
 
 
