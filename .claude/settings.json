@@ -12,7 +12,10 @@
       "Bash(pnpm biome:*)",
       "Bash(npx tsc:*)",
       "Bash(pnpm check:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(gh run:*)",
+      "Bash(gh workflow:*)",
+      "Bash(npx docusaurus:*)"
     ],
     "additionalDirectories": [
       ".claude"
