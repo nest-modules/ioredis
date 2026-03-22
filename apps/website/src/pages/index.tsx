@@ -7,7 +7,7 @@ import Heading from '@theme/Heading';
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <header className={clsx('hero hero--primary')}>
+    <header className={clsx('hero hero--primary')} style={{ textAlign: 'center' }}>
       <div className="container">
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
