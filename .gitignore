@@ -1,12 +1,17 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
 # compiled output
-/dist
+dist
 /tmp
 /out-tsc
 
 # dependencies
-/node_modules
+node_modules
+
+# turbo
+.turbo
+
+# docusaurus
+.docusaurus
+apps/website/build
 
 # profiling files
 chrome-profiler-events.json
@@ -41,12 +46,3 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-
-# Doc
-lib/core/metadata.js
-lib/core/MetadataBlog.js
-website/translated_docs
-website/build/
-website/yarn.lock
-website/node_modules
-website/i18n/*

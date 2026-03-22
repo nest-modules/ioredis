@@ -1,0 +1,47 @@
+:root {
+  --ifm-color-primary: #e0234e;
+  --ifm-color-primary-dark: #cd1a43;
+  --ifm-color-primary-darker: #c2193f;
+  --ifm-color-primary-darkest: #9f1434;
+  --ifm-color-primary-light: #e43d62;
+  --ifm-color-primary-lighter: #e64d6f;
+  --ifm-color-primary-lightest: #eb7590;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #e0234e;
+  --ifm-color-primary-dark: #cd1a43;
+  --ifm-color-primary-darker: #c2193f;
+  --ifm-color-primary-darkest: #9f1434;
+  --ifm-color-primary-light: #e43d62;
+  --ifm-color-primary-lighter: #e64d6f;
+  --ifm-color-primary-lightest: #eb7590;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+  padding: 4rem 0;
+}
+
+.hero__title {
+  font-size: 3rem;
+  color: white;
+}
+
+.hero__subtitle {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.feature-card {
+  padding: 2rem;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+}

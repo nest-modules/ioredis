@@ -15,15 +15,6 @@
     "rootDir": "./lib",
     "lib": ["es7"]
   },
-  "include": [
-    "lib/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["lib/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }
-
-
-
-
-   
