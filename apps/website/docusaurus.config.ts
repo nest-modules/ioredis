@@ -14,7 +14,12 @@ const config: Config = {
   projectName: 'ioredis',
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   i18n: {
     defaultLocale: 'en',
@@ -30,11 +35,7 @@ const config: Config = {
           editUrl:
             'https://github.com/nest-modules/ioredis/tree/main/apps/website/',
         },
-        blog: {
-          showReadingTime: true,
-          editUrl:
-            'https://github.com/nest-modules/ioredis/tree/main/apps/website/blog/',
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -56,7 +57,11 @@ const config: Config = {
           position: 'left',
           label: 'Documentation',
         },
-        { to: '/blog', label: 'Blog', position: 'left' },
+        {
+          href: 'https://www.npmjs.com/package/@nestjs-modules/ioredis',
+          label: 'npm',
+          position: 'right',
+        },
         {
           href: 'https://github.com/nest-modules/ioredis',
           label: 'GitHub',
@@ -77,6 +82,14 @@ const config: Config = {
             {
               label: 'Configuration',
               to: '/docs/configuration',
+            },
+            {
+              label: 'Cluster',
+              to: '/docs/cluster',
+            },
+            {
+              label: 'Health Checks',
+              to: '/docs/health-check',
             },
           ],
         },
@@ -100,10 +113,6 @@ const config: Config = {
         {
           title: 'More',
           items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
             {
               label: 'GitHub',
               href: 'https://github.com/nest-modules/ioredis',
