@@ -12,6 +12,8 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    # Skip release commits to avoid infinite loops
+    if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore(release)') }}
     permissions:
       contents: write
       pull-requests: write
@@ -19,6 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -41,13 +45,6 @@ jobs:
 
       - name: Auto-create changeset if source code changed
         run: |
-          # Skip if this push is a changesets version commit (prevents infinite loop)
-          COMMIT_MSG=$(git log -1 --pretty=%s)
-          if echo "$COMMIT_MSG" | grep -q "^chore(release)"; then
-            echo "Skipping: this is a changesets version commit"
-            exit 0
-          fi
-
           # Skip if changesets already exist
           CHANGESETS=$(ls .changeset/*.md 2>/dev/null | grep -v README.md || true)
           if [ -n "$CHANGESETS" ]; then
@@ -55,56 +52,83 @@ jobs:
             exit 0
           fi
 
-          # Check if there are actual changes in packages/ or apps/ since last tag
+          # Check if there are actual changes in packages/ since last tag
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -n "$LAST_TAG" ]; then
-            CHANGES=$(git diff --name-only "$LAST_TAG"..HEAD -- packages/ apps/ | head -1)
+            CHANGES=$(git diff --name-only "$LAST_TAG"..HEAD -- packages/ | head -1)
           else
             CHANGES="first-release"
           fi
 
-          if [ -n "$CHANGES" ]; then
-            echo "Source changes detected, determining version bump..."
-
-            # Analyze commits since last tag to determine bump type
-            if [ -n "$LAST_TAG" ]; then
-              COMMITS=$(git log "$LAST_TAG"..HEAD --pretty=%s -- packages/ apps/)
-            else
-              COMMITS=$(git log --pretty=%s -- packages/ apps/)
-            fi
-
-            BUMP="patch"
-
-            # Check for minor: feat(...) or feat:
-            if echo "$COMMITS" | grep -qiE "^feat(\(.*\))?:"; then
-              BUMP="minor"
-            fi
-
-            # Check for major: feat!(...), fix!(...), BREAKING CHANGE in body, or !: convention
-            if echo "$COMMITS" | grep -qiE "^[a-z]+(\(.*\))?!:"; then
-              BUMP="major"
-            fi
-            if [ -n "$LAST_TAG" ]; then
-              BODIES=$(git log "$LAST_TAG"..HEAD --pretty=%b -- packages/ apps/)
-            else
-              BODIES=$(git log --pretty=%b -- packages/ apps/)
-            fi
-            if echo "$BODIES" | grep -q "BREAKING CHANGE"; then
-              BUMP="major"
-            fi
-
-            echo "Detected bump type: $BUMP"
-
-            cat > .changeset/auto-release.md << CHANGESET
-          ---
-          '@nestjs-modules/ioredis': ${BUMP}
-          ---
-
-          Auto-release ${BUMP} version with latest changes.
-          CHANGESET
-          else
+          if [ -z "$CHANGES" ]; then
             echo "No source changes detected, skipping changeset creation"
+            exit 0
           fi
+
+          echo "Source changes detected, determining version bump..."
+
+          # Analyze commits since last tag to determine bump type
+          if [ -n "$LAST_TAG" ]; then
+            COMMITS=$(git log "$LAST_TAG"..HEAD --pretty=%s -- packages/)
+            BODIES=$(git log "$LAST_TAG"..HEAD --pretty=%b -- packages/)
+          else
+            COMMITS=$(git log --pretty=%s -- packages/)
+            BODIES=$(git log --pretty=%b -- packages/)
+          fi
+
+          BUMP="patch"
+
+          # Check for minor: feat(...) or feat:
+          if echo "$COMMITS" | grep -qiE "^feat(\(.*\))?:"; then
+            BUMP="minor"
+          fi
+
+          # Check for major: breaking change convention (! before :) or BREAKING CHANGE in body
+          if echo "$COMMITS" | grep -qiE "^[a-z]+(\(.*\))?!:"; then
+            BUMP="major"
+          fi
+          if echo "$BODIES" | grep -q "BREAKING CHANGE"; then
+            BUMP="major"
+          fi
+
+          echo "Detected bump type: $BUMP"
+
+          # Generate summary from conventional commits
+          SUMMARY=""
+          if [ -n "$LAST_TAG" ]; then
+            FEAT_COMMITS=$(git log "$LAST_TAG"..HEAD --pretty="- %s" -- packages/ | grep -iE "^- feat" || true)
+            FIX_COMMITS=$(git log "$LAST_TAG"..HEAD --pretty="- %s" -- packages/ | grep -iE "^- fix" || true)
+            OTHER_COMMITS=$(git log "$LAST_TAG"..HEAD --pretty="- %s" -- packages/ | grep -viE "^- (feat|fix|chore\(release\))" || true)
+          else
+            FEAT_COMMITS=$(git log --pretty="- %s" -- packages/ | grep -iE "^- feat" || true)
+            FIX_COMMITS=$(git log --pretty="- %s" -- packages/ | grep -iE "^- fix" || true)
+            OTHER_COMMITS=$(git log --pretty="- %s" -- packages/ | grep -viE "^- (feat|fix|chore\(release\))" || true)
+          fi
+
+          if [ -n "$FEAT_COMMITS" ]; then
+            SUMMARY="${SUMMARY}\n### Features\n${FEAT_COMMITS}\n"
+          fi
+          if [ -n "$FIX_COMMITS" ]; then
+            SUMMARY="${SUMMARY}\n### Bug Fixes\n${FIX_COMMITS}\n"
+          fi
+          if [ -n "$OTHER_COMMITS" ]; then
+            SUMMARY="${SUMMARY}\n### Other Changes\n${OTHER_COMMITS}\n"
+          fi
+
+          if [ -z "$SUMMARY" ]; then
+            SUMMARY="Release ${BUMP} version with latest changes."
+          fi
+
+          {
+            echo "---"
+            echo "'@nestjs-modules/ioredis': ${BUMP}"
+            echo "---"
+            echo ""
+            echo -e "$SUMMARY"
+          } > .changeset/auto-release.md
+
+          echo "Generated changeset:"
+          cat .changeset/auto-release.md
 
       - name: Create Release Pull Request or Publish
         id: changesets
@@ -119,7 +143,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release with tag
         if: steps.changesets.outputs.published == 'true'
         run: |
           PACKAGES='${{ steps.changesets.outputs.publishedPackages }}'
@@ -128,13 +152,36 @@ jobs:
             VERSION=$(echo "$pkg" | jq -r '.version')
             TAG="v${VERSION}"
 
-            git tag "$TAG" || true
-            git push origin "$TAG" || true
+            echo "Creating tag and release for ${NAME}@${VERSION} → ${TAG}"
 
+            # Create annotated tag
+            git tag -a "$TAG" -m "Release ${NAME}@${VERSION}" 2>/dev/null || {
+              echo "Tag $TAG already exists, skipping tag creation"
+            }
+            git push origin "$TAG" 2>/dev/null || {
+              echo "Tag $TAG already pushed"
+            }
+
+            # Determine pre-release flag
+            PRERELEASE_FLAG=""
+            if echo "$VERSION" | grep -qE "(alpha|beta|rc|canary)"; then
+              PRERELEASE_FLAG="--prerelease"
+            fi
+
+            # Determine previous tag for release notes
+            PREV_TAG=$(git tag --sort=-version:refname | grep -E "^v[0-9]" | grep -v "$TAG" | head -1 || true)
+
+            NOTES_FLAG="--generate-notes"
+            if [ -n "$PREV_TAG" ]; then
+              NOTES_FLAG="--generate-notes --notes-start-tag $PREV_TAG"
+            fi
+
+            # Create GitHub Release
             gh release create "$TAG" \
-              --title "$TAG" \
-              --generate-notes \
-              --latest || echo "Release $TAG already exists"
+              --title "${NAME}@${VERSION}" \
+              $NOTES_FLAG \
+              $PRERELEASE_FLAG \
+              --latest || echo "Release $TAG already exists, skipping"
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

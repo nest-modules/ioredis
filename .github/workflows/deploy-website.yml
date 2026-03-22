@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'apps/website/**'
+      - '!**/CHANGELOG.md'
   workflow_dispatch:
   workflow_run:
     workflows: ['Release']
