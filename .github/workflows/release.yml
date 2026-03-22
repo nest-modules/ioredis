@@ -38,13 +38,102 @@ jobs:
       - name: Test
         run: pnpm run test --filter=@nestjs-modules/ioredis
 
+      - name: Auto-create changeset if source code changed
+        run: |
+          # Skip if this push is a changesets version commit (prevents infinite loop)
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          if echo "$COMMIT_MSG" | grep -q "^chore(release)"; then
+            echo "Skipping: this is a changesets version commit"
+            exit 0
+          fi
+
+          # Skip if changesets already exist
+          CHANGESETS=$(ls .changeset/*.md 2>/dev/null | grep -v README.md || true)
+          if [ -n "$CHANGESETS" ]; then
+            echo "Skipping: changesets already exist"
+            exit 0
+          fi
+
+          # Check if there are actual changes in packages/ or apps/ since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            CHANGES=$(git diff --name-only "$LAST_TAG"..HEAD -- packages/ apps/ | head -1)
+          else
+            CHANGES="first-release"
+          fi
+
+          if [ -n "$CHANGES" ]; then
+            echo "Source changes detected, determining version bump..."
+
+            # Analyze commits since last tag to determine bump type
+            if [ -n "$LAST_TAG" ]; then
+              COMMITS=$(git log "$LAST_TAG"..HEAD --pretty=%s -- packages/ apps/)
+            else
+              COMMITS=$(git log --pretty=%s -- packages/ apps/)
+            fi
+
+            BUMP="patch"
+
+            # Check for minor: feat(...) or feat:
+            if echo "$COMMITS" | grep -qiE "^feat(\(.*\))?:"; then
+              BUMP="minor"
+            fi
+
+            # Check for major: feat!(...), fix!(...), BREAKING CHANGE in body, or !: convention
+            if echo "$COMMITS" | grep -qiE "^[a-z]+(\(.*\))?!:"; then
+              BUMP="major"
+            fi
+            if [ -n "$LAST_TAG" ]; then
+              BODIES=$(git log "$LAST_TAG"..HEAD --pretty=%b -- packages/ apps/)
+            else
+              BODIES=$(git log --pretty=%b -- packages/ apps/)
+            fi
+            if echo "$BODIES" | grep -q "BREAKING CHANGE"; then
+              BUMP="major"
+            fi
+
+            echo "Detected bump type: $BUMP"
+
+            cat > .changeset/auto-release.md << CHANGESET
+          ---
+          '@nestjs-modules/ioredis': ${BUMP}
+          ---
+
+          Auto-release ${BUMP} version with latest changes.
+          CHANGESET
+          else
+            echo "No source changes detected, skipping changeset creation"
+          fi
+
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
           publish: pnpm run release
           version: pnpm run version-packages
+          title: 'chore(release): version packages'
+          commit: 'chore(release): version packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          PACKAGES='${{ steps.changesets.outputs.publishedPackages }}'
+          echo "$PACKAGES" | jq -c '.[]' | while read -r pkg; do
+            NAME=$(echo "$pkg" | jq -r '.name')
+            VERSION=$(echo "$pkg" | jq -r '.version')
+            TAG="v${VERSION}"
+
+            git tag "$TAG" || true
+            git push origin "$TAG" || true
+
+            gh release create "$TAG" \
+              --title "$TAG" \
+              --generate-notes \
+              --latest || echo "Release $TAG already exists"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
