@@ -56,16 +56,19 @@ lib/
 ├── utils/
 │   └── redis-connection.util.ts          # Token helpers + createRedisConnection
 ├── health/
-│   ├── redis-health.indicator.ts         # Health indicator (uses HealthIndicatorService)
+│   ├── redis-health.indicator.ts         # Health indicator (supports named connections)
 │   ├── redis-health.module.ts            # Health module (imports TerminusModule)
 │   └── redis-health.provider.ts          # Bridges Redis connection to health indicator
+├── testing/
+│   └── redis-test.module.ts             # RedisTestModule + createMockRedis for unit tests
 └── __tests__/
-    ├── redis-connection.util.spec.ts     # Token + connection factory tests
+    ├── redis-connection.util.spec.ts     # Token + connection factory + onClientReady tests
     ├── inject-redis.decorator.spec.ts    # Decorator tests
     ├── redis-core.module.spec.ts         # Core module DI tests
     ├── redis.module.spec.ts              # Public module integration tests
     ├── redis-providers.spec.ts           # Provider factory unit tests
-    └── redis-health.indicator.spec.ts    # Health indicator tests
+    ├── redis-health.indicator.spec.ts    # Health indicator tests (incl. named connections)
+    └── redis-test.module.spec.ts         # Testing module + mock tests
 ```
 
 ### Module Pattern
@@ -110,9 +113,17 @@ Tokens are generated as `{connectionName}_{tokenSuffix}`:
 - Connection: `{name}_IORedisModuleConnectionToken`
 - Default name: `'default'`
 
+### onClientReady
+
+Both `RedisSingleOptions` and `RedisClusterOptions` support an `onClientReady` callback that receives the client instance right after creation. Useful for attaching event listeners (error, connect, etc.).
+
 ### Health Checks
 
-Uses `@nestjs/terminus` with the new `HealthIndicatorService` API (not the deprecated `HealthCheckError`/`HealthIndicator`). The health provider bridges the default Redis connection to the indicator via `REDIS_HEALTH_INDICATOR` token.
+Uses `@nestjs/terminus` with the new `HealthIndicatorService` API (not the deprecated `HealthCheckError`/`HealthIndicator`). The health provider bridges the default Redis connection to the indicator via `REDIS_HEALTH_INDICATOR` token. Supports checking named connections by passing the connection instance: `redisHealth.isHealthy('cache', cacheRedis)`.
+
+### Testing
+
+`RedisTestModule.forTest(connection?)` provides a mock Redis with all standard methods as `jest.fn()`. `createMockRedis()` is available for manual setups. Supports named connections and method overrides.
 
 ### Graceful Shutdown
 

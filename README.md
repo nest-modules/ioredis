@@ -65,6 +65,7 @@ Full documentation is available at **[nest-modules.github.io/ioredis](https://ne
 - [Configuration](https://nest-modules.github.io/ioredis/docs/configuration)
 - [Cluster](https://nest-modules.github.io/ioredis/docs/cluster)
 - [Health Checks](https://nest-modules.github.io/ioredis/docs/health-check)
+- [Testing](https://nest-modules.github.io/ioredis/docs/testing)
 
 ## License
 

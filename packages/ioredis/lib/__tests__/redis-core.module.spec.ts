@@ -1,5 +1,5 @@
 import { Injectable, Module } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import Redis from 'ioredis';
 import { RedisModuleOptions, RedisModuleOptionsFactory } from '../interfaces';
 import { RedisCoreModule } from '../modules/redis-core.module';

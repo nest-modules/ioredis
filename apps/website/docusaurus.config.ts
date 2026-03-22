@@ -91,6 +91,10 @@ const config: Config = {
               label: 'Health Checks',
               to: '/docs/health-check',
             },
+            {
+              label: 'Testing',
+              to: '/docs/testing',
+            },
           ],
         },
         {

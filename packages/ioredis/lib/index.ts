@@ -18,6 +18,11 @@ export {
 export { RedisModule } from './modules/redis.module';
 export { RedisCoreModule } from './modules/redis-core.module';
 export {
+  createMockRedis,
+  MockRedis,
+  RedisTestModule,
+} from './testing/redis-test.module';
+export {
   createRedisConnection,
   getRedisConnectionToken,
   getRedisOptionsToken,

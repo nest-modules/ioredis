@@ -1,16 +1,23 @@
 import { ModuleMetadata, Type } from '@nestjs/common/interfaces';
-import { ClusterNode, ClusterOptions, RedisOptions } from 'ioredis';
+import Redis, {
+  Cluster,
+  ClusterNode,
+  ClusterOptions,
+  RedisOptions,
+} from 'ioredis';
 
 export interface RedisSingleOptions {
   type: 'single';
   url?: string;
   options?: RedisOptions;
+  onClientReady?: (client: Redis) => void;
 }
 
 export interface RedisClusterOptions {
   type: 'cluster';
   nodes: ClusterNode[];
   options?: ClusterOptions;
+  onClientReady?: (client: Cluster) => void;
 }
 
 export type RedisModuleOptions = RedisSingleOptions | RedisClusterOptions;

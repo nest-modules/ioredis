@@ -21,12 +21,22 @@ export function createRedisConnection(
 
   switch (type) {
     case 'cluster': {
-      const { nodes, options: clusterOptions = {} } = options;
-      return new Redis.Cluster(nodes, clusterOptions);
+      const { nodes, options: clusterOptions = {}, onClientReady } = options;
+      const client = new Redis.Cluster(nodes, clusterOptions);
+      if (onClientReady) {
+        onClientReady(client);
+      }
+      return client;
     }
     case 'single': {
-      const { url, options: redisOptions = {} } = options;
-      return url ? new Redis(url, redisOptions) : new Redis(redisOptions);
+      const { url, options: redisOptions = {}, onClientReady } = options;
+      const client = url
+        ? new Redis(url, redisOptions)
+        : new Redis(redisOptions);
+      if (onClientReady) {
+        onClientReady(client);
+      }
+      return client;
     }
     default:
       throw new Error(

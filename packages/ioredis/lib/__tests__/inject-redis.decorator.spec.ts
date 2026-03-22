@@ -9,7 +9,7 @@ describe('InjectRedis', () => {
 
   it('should apply the default connection token as parameter metadata', () => {
     class TestClass {
-      constructor(@InjectRedis() private readonly redis: any) {}
+      constructor(@InjectRedis() readonly _redis: any) {}
     }
 
     expect(TestClass).toBeDefined();
@@ -21,7 +21,7 @@ describe('InjectRedis', () => {
     expect(typeof decorator).toBe('function');
 
     class TestClass {
-      constructor(@InjectRedis(customName) private readonly redis: any) {}
+      constructor(@InjectRedis(customName) readonly _redis: any) {}
     }
 
     expect(TestClass).toBeDefined();

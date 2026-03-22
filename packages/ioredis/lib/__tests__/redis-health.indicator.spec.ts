@@ -88,5 +88,81 @@ describe('RedisHealthIndicator', () => {
         'my-redis-cache': { status: 'up' },
       });
     });
+
+    it('should accept an explicit connection for named connections', async () => {
+      const namedRedis = { ping: jest.fn().mockResolvedValue('PONG') };
+
+      const result = await indicator.isHealthy('cache', namedRedis as any);
+
+      expect(result).toEqual({ cache: { status: 'up' } });
+      expect(namedRedis.ping).toHaveBeenCalledTimes(1);
+      expect(mockRedis.ping).not.toHaveBeenCalled();
+    });
+
+    it('should report down for explicit connection that fails', async () => {
+      const namedRedis = {
+        ping: jest.fn().mockRejectedValue(new Error('Cluster unreachable')),
+      };
+
+      const result = await indicator.isHealthy('cluster', namedRedis as any);
+
+      expect(result).toEqual({
+        cluster: {
+          status: 'down',
+          message: 'Cluster unreachable',
+        },
+      });
+    });
+  });
+
+  describe('without default connection', () => {
+    it('should return down when no connection is available', async () => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          RedisHealthIndicator,
+          HealthIndicatorService,
+          {
+            provide: REDIS_HEALTH_INDICATOR,
+            useValue: null,
+          },
+        ],
+      }).compile();
+
+      const indicatorWithout =
+        module.get<RedisHealthIndicator>(RedisHealthIndicator);
+
+      const result = await indicatorWithout.isHealthy('redis');
+
+      expect(result).toEqual({
+        redis: {
+          status: 'down',
+          message: 'No Redis connection provided',
+        },
+      });
+    });
+
+    it('should still work with explicit connection even without default', async () => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          RedisHealthIndicator,
+          HealthIndicatorService,
+          {
+            provide: REDIS_HEALTH_INDICATOR,
+            useValue: null,
+          },
+        ],
+      }).compile();
+
+      const indicatorWithout =
+        module.get<RedisHealthIndicator>(RedisHealthIndicator);
+      const namedRedis = { ping: jest.fn().mockResolvedValue('PONG') };
+
+      const result = await indicatorWithout.isHealthy(
+        'cache',
+        namedRedis as any,
+      );
+
+      expect(result).toEqual({ cache: { status: 'up' } });
+    });
   });
 });

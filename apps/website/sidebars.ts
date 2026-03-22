@@ -6,6 +6,7 @@ const sidebars: SidebarsConfig = {
     'configuration',
     'cluster',
     'health-check',
+    'testing',
   ],
 };
 

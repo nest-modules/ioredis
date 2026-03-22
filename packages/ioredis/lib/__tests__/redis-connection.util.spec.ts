@@ -111,5 +111,39 @@ describe('redis-connection.util', () => {
       expect((connection as Redis).options.db).toBe(1);
       connection.disconnect();
     });
+
+    it('should call onClientReady for single type', () => {
+      const onClientReady = jest.fn();
+      const connection = createRedisConnection({
+        type: 'single',
+        options: { lazyConnect: true },
+        onClientReady,
+      });
+      expect(onClientReady).toHaveBeenCalledTimes(1);
+      expect(onClientReady).toHaveBeenCalledWith(connection);
+      connection.disconnect();
+    });
+
+    it('should call onClientReady for cluster type', () => {
+      const onClientReady = jest.fn();
+      const connection = createRedisConnection({
+        type: 'cluster',
+        nodes: [{ host: '127.0.0.1', port: 6379 }],
+        options: { lazyConnect: true },
+        onClientReady,
+      });
+      expect(onClientReady).toHaveBeenCalledTimes(1);
+      expect(onClientReady).toHaveBeenCalledWith(connection);
+      connection.disconnect();
+    });
+
+    it('should not throw when onClientReady is not provided', () => {
+      const connection = createRedisConnection({
+        type: 'single',
+        options: { lazyConnect: true },
+      });
+      expect(connection).toBeInstanceOf(Redis);
+      connection.disconnect();
+    });
   });
 });

@@ -55,3 +55,33 @@ export class HealthController {
   }
 }
 ```
+
+## Named Connections
+
+If you use multiple Redis connections, you can check any of them by passing the connection instance directly:
+
+```typescript
+import { Controller, Get } from '@nestjs/common';
+import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
+import { InjectRedis, RedisHealthIndicator } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
+
+@Controller('health')
+export class HealthController {
+  constructor(
+    private health: HealthCheckService,
+    private redisHealth: RedisHealthIndicator,
+    @InjectRedis('cache') private readonly cacheRedis: Redis,
+    @InjectRedis('session') private readonly sessionRedis: Redis,
+  ) {}
+
+  @Get()
+  @HealthCheck()
+  check() {
+    return this.health.check([
+      () => this.redisHealth.isHealthy('cache', this.cacheRedis),
+      () => this.redisHealth.isHealthy('session', this.sessionRedis),
+    ]);
+  }
+}
+```
