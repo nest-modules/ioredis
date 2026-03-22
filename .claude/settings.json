@@ -15,7 +15,9 @@
       "Bash(gh api:*)",
       "Bash(gh run:*)",
       "Bash(gh workflow:*)",
-      "Bash(npx docusaurus:*)"
+      "Bash(npx docusaurus:*)",
+      "Bash(pnpm changeset:*)",
+      "Bash(gh release:*)"
     ],
     "additionalDirectories": [
       ".claude"
