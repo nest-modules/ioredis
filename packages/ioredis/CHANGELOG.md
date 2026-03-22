@@ -1,5 +1,12 @@
 # @nestjs-modules/ioredis
 
+## 2.2.1
+
+### Patch Changes
+
+- ### Bug Fixes
+  - fix: add README.md to published package with docs link
+
 ## 2.2.0
 
 ### Minor Changes
