@@ -1,5 +1,12 @@
 # @nestjs-modules/ioredis
 
+## 2.2.0
+
+### Minor Changes
+
+- ### Features
+  - feat: add RedisTestModule, onClientReady, and named health checks
+
 ## 2.1.0
 
 ### Minor Changes
