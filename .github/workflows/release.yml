@@ -12,8 +12,6 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    # Skip release commits to avoid infinite loops
-    if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore(release)') }}
     permissions:
       contents: write
       pull-requests: write
@@ -45,15 +43,42 @@ jobs:
 
       - name: Auto-create changeset if source code changed
         run: |
-          # Skip if changesets already exist
-          CHANGESETS=$(ls .changeset/*.md 2>/dev/null | grep -v README.md || true)
-          if [ -n "$CHANGESETS" ]; then
-            echo "Skipping: changesets already exist"
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+
+          # 1) Skip if this is a merge from changeset-release branch.
+          #    When the version PR is merged, we need changesets/action to PUBLISH,
+          #    not create another changeset/PR (which causes infinite loops).
+          if echo "$COMMIT_MSG" | grep -q "changeset-release/main"; then
+            echo "⏭️ Skipping: changeset release PR was just merged → letting changesets/action publish"
             exit 0
           fi
 
-          # Check if there are actual changes in packages/ since last tag
+          # 2) Skip if this is a direct chore(release) commit
+          if echo "$COMMIT_MSG" | grep -q "^chore(release)"; then
+            echo "⏭️ Skipping: this is a changesets version commit"
+            exit 0
+          fi
+
+          # 3) Skip if changesets already exist (manually created)
+          CHANGESETS=$(ls .changeset/*.md 2>/dev/null | grep -v README.md || true)
+          if [ -n "$CHANGESETS" ]; then
+            echo "⏭️ Skipping: changesets already exist"
+            exit 0
+          fi
+
+          # 4) Skip if package version is already ahead of latest tag
+          #    (version was already bumped by a previous changeset version step)
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            TAG_VERSION=$(echo "$LAST_TAG" | sed 's/^v//')
+            PKG_VERSION=$(node -p "require('./packages/ioredis/package.json').version")
+            if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+              echo "⏭️ Skipping: package version ($PKG_VERSION) differs from latest tag ($TAG_VERSION) → version already bumped"
+              exit 0
+            fi
+          fi
+
+          # 5) Check if there are actual changes in packages/ since last tag
           if [ -n "$LAST_TAG" ]; then
             CHANGES=$(git diff --name-only "$LAST_TAG"..HEAD -- packages/ | head -1)
           else
@@ -61,11 +86,11 @@ jobs:
           fi
 
           if [ -z "$CHANGES" ]; then
-            echo "No source changes detected, skipping changeset creation"
+            echo "⏭️ No source changes detected, skipping changeset creation"
             exit 0
           fi
 
-          echo "Source changes detected, determining version bump..."
+          echo "✅ Source changes detected, determining version bump..."
 
           # Analyze commits since last tag to determine bump type
           if [ -n "$LAST_TAG" ]; then
@@ -91,18 +116,18 @@ jobs:
             BUMP="major"
           fi
 
-          echo "Detected bump type: $BUMP"
+          echo "📦 Detected bump type: $BUMP"
 
           # Generate summary from conventional commits
           SUMMARY=""
           if [ -n "$LAST_TAG" ]; then
             FEAT_COMMITS=$(git log "$LAST_TAG"..HEAD --pretty="- %s" -- packages/ | grep -iE "^- feat" || true)
             FIX_COMMITS=$(git log "$LAST_TAG"..HEAD --pretty="- %s" -- packages/ | grep -iE "^- fix" || true)
-            OTHER_COMMITS=$(git log "$LAST_TAG"..HEAD --pretty="- %s" -- packages/ | grep -viE "^- (feat|fix|chore\(release\))" || true)
+            OTHER_COMMITS=$(git log "$LAST_TAG"..HEAD --pretty="- %s" -- packages/ | grep -viE "^- (feat|fix|chore\(release\)|Merge)" || true)
           else
             FEAT_COMMITS=$(git log --pretty="- %s" -- packages/ | grep -iE "^- feat" || true)
             FIX_COMMITS=$(git log --pretty="- %s" -- packages/ | grep -iE "^- fix" || true)
-            OTHER_COMMITS=$(git log --pretty="- %s" -- packages/ | grep -viE "^- (feat|fix|chore\(release\))" || true)
+            OTHER_COMMITS=$(git log --pretty="- %s" -- packages/ | grep -viE "^- (feat|fix|chore\(release\)|Merge)" || true)
           fi
 
           if [ -n "$FEAT_COMMITS" ]; then
