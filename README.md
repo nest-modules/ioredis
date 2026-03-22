@@ -20,7 +20,7 @@
 ## Installation
 
 ```sh
-npm install @nestjs-modules/ioredis ioredis
+pnpm add @nestjs-modules/ioredis ioredis
 ```
 
 ## Quick Start
