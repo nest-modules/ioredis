@@ -1,10 +1,13 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { RedisCoreModule } from './redis.core-module';
-import { RedisModuleAsyncOptions, RedisModuleOptions } from './redis.interfaces';
+import { RedisModuleAsyncOptions, RedisModuleOptions } from '../interfaces';
+import { RedisCoreModule } from './redis-core.module';
 
 @Module({})
 export class RedisModule {
-  public static forRoot(options: RedisModuleOptions, connection?: string): DynamicModule {
+  static forRoot(
+    options: RedisModuleOptions,
+    connection?: string,
+  ): DynamicModule {
     return {
       module: RedisModule,
       imports: [RedisCoreModule.forRoot(options, connection)],
@@ -12,7 +15,10 @@ export class RedisModule {
     };
   }
 
-  public static forRootAsync(options: RedisModuleAsyncOptions, connection?: string): DynamicModule {
+  static forRootAsync(
+    options: RedisModuleAsyncOptions,
+    connection?: string,
+  ): DynamicModule {
     return {
       module: RedisModule,
       imports: [RedisCoreModule.forRootAsync(options, connection)],

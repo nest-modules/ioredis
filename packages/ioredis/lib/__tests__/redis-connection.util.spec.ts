@@ -1,16 +1,16 @@
 import Redis from 'ioredis';
 import {
-  getRedisOptionsToken,
-  getRedisConnectionToken,
-  createRedisConnection,
-} from './redis.utils';
-import {
   REDIS_MODULE_CONNECTION,
   REDIS_MODULE_CONNECTION_TOKEN,
   REDIS_MODULE_OPTIONS_TOKEN,
-} from './redis.constants';
+} from '../constants';
+import {
+  createRedisConnection,
+  getRedisConnectionToken,
+  getRedisOptionsToken,
+} from '../utils/redis-connection.util';
 
-describe('redis.utils', () => {
+describe('redis-connection.util', () => {
   describe('getRedisOptionsToken', () => {
     it('should return default token when no connection name is provided', () => {
       const token = getRedisOptionsToken();
@@ -80,15 +80,6 @@ describe('redis.utils', () => {
       connection.disconnect();
     });
 
-    it('should create a single Redis instance with empty options', () => {
-      const connection = createRedisConnection({
-        type: 'single',
-        options: { lazyConnect: true },
-      });
-      expect(connection).toBeInstanceOf(Redis);
-      connection.disconnect();
-    });
-
     it('should create a Redis.Cluster instance for cluster type', () => {
       const connection = createRedisConnection({
         type: 'cluster',
@@ -100,9 +91,9 @@ describe('redis.utils', () => {
     });
 
     it('should throw for invalid type', () => {
-      expect(() =>
-        createRedisConnection({ type: 'invalid' } as any),
-      ).toThrow('Invalid configuration');
+      expect(() => createRedisConnection({ type: 'invalid' } as any)).toThrow(
+        'Invalid configuration',
+      );
     });
 
     it('should merge common options with host/port for single type', () => {

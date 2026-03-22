@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ncu -u)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(gh issue:*)",
+      "Bash(npx jest:*)",
+      "Bash(pnpm:*)",
+      "Bash(turbo:*)",
+      "Bash(ls -la packages/ioredis/node_modules/.pnpm/@nestjs+terminus@11.1.1_*/node_modules/@nestjs/terminus/)",
+      "Bash(pnpm biome:*)",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm check:*)"
+    ],
+    "additionalDirectories": [
+      ".claude"
+    ]
+  }
+}

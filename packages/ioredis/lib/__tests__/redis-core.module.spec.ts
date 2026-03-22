@@ -1,12 +1,12 @@
-import Redis from 'ioredis';
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { RedisCoreModule } from './redis.core-module';
+import Redis from 'ioredis';
+import { RedisModuleOptions, RedisModuleOptionsFactory } from '../interfaces';
+import { RedisCoreModule } from '../modules/redis-core.module';
 import {
-  RedisModuleOptions,
-  RedisModuleOptionsFactory,
-} from './redis.interfaces';
-import { getRedisConnectionToken, getRedisOptionsToken } from './redis.utils';
+  getRedisConnectionToken,
+  getRedisOptionsToken,
+} from '../utils/redis-connection.util';
 
 const REDIS_OPTIONS: RedisModuleOptions = {
   type: 'single',
@@ -313,7 +313,6 @@ describe('RedisCoreModule', () => {
         .spyOn(connection, 'quit')
         .mockRejectedValue(new Error('quit failed'));
 
-      // Should not throw even when quit fails
       await expect(app.close()).resolves.not.toThrow();
     });
   });

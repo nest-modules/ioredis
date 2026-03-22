@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
-import { REDIS_HEALTH_INDICATOR } from '../redis.constants';
-import { getRedisConnectionToken } from '../redis.utils';
+import { REDIS_HEALTH_INDICATOR } from '../constants';
+import { getRedisConnectionToken } from '../utils/redis-connection.util';
 
 export const redisHealthIndicatorProvider = {
   provide: REDIS_HEALTH_INDICATOR,

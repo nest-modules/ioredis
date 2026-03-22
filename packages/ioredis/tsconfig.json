@@ -9,12 +9,12 @@
     "noLib": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "target": "ES2021",
     "sourceMap": false,
     "outDir": "./dist",
     "rootDir": "./lib",
-    "lib": ["es7"]
+    "lib": ["ES2021"]
   },
   "include": ["lib/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
+  "exclude": ["node_modules", "dist", "lib/__tests__"]
 }

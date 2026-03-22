@@ -1,7 +1,7 @@
+import { HealthIndicatorService } from '@nestjs/terminus';
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheckError } from '@nestjs/terminus';
-import { RedisHealthIndicator } from './redis-health.indicator';
-import { REDIS_HEALTH_INDICATOR } from '../redis.constants';
+import { REDIS_HEALTH_INDICATOR } from '../constants';
+import { RedisHealthIndicator } from '../health/redis-health.indicator';
 
 describe('RedisHealthIndicator', () => {
   let indicator: RedisHealthIndicator;
@@ -15,6 +15,7 @@ describe('RedisHealthIndicator', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RedisHealthIndicator,
+        HealthIndicatorService,
         {
           provide: REDIS_HEALTH_INDICATOR,
           useValue: mockRedis,
@@ -39,51 +40,43 @@ describe('RedisHealthIndicator', () => {
       expect(mockRedis.ping).toHaveBeenCalledTimes(1);
     });
 
-    it('should throw HealthCheckError when ping fails', async () => {
+    it('should return down status when ping fails', async () => {
       mockRedis.ping.mockRejectedValue(new Error('Connection refused'));
 
-      await expect(indicator.isHealthy('redis')).rejects.toThrow(
-        HealthCheckError,
-      );
-      await expect(indicator.isHealthy('redis')).rejects.toThrow(
-        'Redis check failed',
-      );
+      const result = await indicator.isHealthy('redis');
+
+      expect(result).toEqual({
+        redis: {
+          status: 'down',
+          message: 'Connection refused',
+        },
+      });
     });
 
-    it('should include error message in health check error details', async () => {
+    it('should include error message in down result', async () => {
       mockRedis.ping.mockRejectedValue(new Error('ECONNREFUSED'));
 
-      try {
-        await indicator.isHealthy('redis');
-        fail('Should have thrown');
-      } catch (error) {
-        expect(error).toBeInstanceOf(HealthCheckError);
-        const healthError = error as HealthCheckError;
-        expect(healthError.causes).toEqual({
-          redis: {
-            status: 'down',
-            message: 'ECONNREFUSED',
-          },
-        });
-      }
+      const result = await indicator.isHealthy('redis');
+
+      expect(result).toEqual({
+        redis: {
+          status: 'down',
+          message: 'ECONNREFUSED',
+        },
+      });
     });
 
     it('should handle non-Error thrown values gracefully', async () => {
       mockRedis.ping.mockRejectedValue('string error');
 
-      try {
-        await indicator.isHealthy('redis');
-        fail('Should have thrown');
-      } catch (error) {
-        expect(error).toBeInstanceOf(HealthCheckError);
-        const healthError = error as HealthCheckError;
-        expect(healthError.causes).toEqual({
-          redis: {
-            status: 'down',
-            message: 'Unknown error',
-          },
-        });
-      }
+      const result = await indicator.isHealthy('redis');
+
+      expect(result).toEqual({
+        redis: {
+          status: 'down',
+          message: 'Unknown error',
+        },
+      });
     });
 
     it('should use custom key name in result', async () => {
@@ -91,7 +84,9 @@ describe('RedisHealthIndicator', () => {
 
       const result = await indicator.isHealthy('my-redis-cache');
 
-      expect(result).toEqual({ 'my-redis-cache': { status: 'up' } });
+      expect(result).toEqual({
+        'my-redis-cache': { status: 'up' },
+      });
     });
   });
 });

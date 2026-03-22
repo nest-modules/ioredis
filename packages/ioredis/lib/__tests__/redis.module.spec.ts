@@ -1,13 +1,10 @@
-import Redis from 'ioredis';
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { InjectRedis } from './redis.decorators';
-import {
-  RedisModuleOptions,
-  RedisModuleOptionsFactory,
-} from './redis.interfaces';
-import { RedisModule } from './redis.module';
-import { getRedisConnectionToken } from './redis.utils';
+import Redis from 'ioredis';
+import { InjectRedis } from '../decorators/inject-redis.decorator';
+import { RedisModuleOptions, RedisModuleOptionsFactory } from '../interfaces';
+import { RedisModule } from '../modules/redis.module';
+import { getRedisConnectionToken } from '../utils/redis-connection.util';
 
 const REDIS_OPTIONS: RedisModuleOptions = {
   type: 'single',
