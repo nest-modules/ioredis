@@ -32,9 +32,9 @@ export class RedisCoreModule implements OnApplicationShutdown {
         if (connection && typeof connection.quit === 'function') {
           await connection.quit();
         }
-      } catch {}
-    }
-    RedisCoreModule.connectionTokens.clear();
+        RedisCoreModule.connectionTokens.delete(token);
+      } catch {}      
+    }    
   }
 
   static forRoot(
