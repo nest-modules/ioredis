@@ -4,6 +4,7 @@ import { getRedisConnectionToken } from '../utils/redis-connection.util';
 const MOCK_REDIS_METHODS = [
   'get',
   'set',
+  'call',
   'del',
   'exists',
   'expire',
