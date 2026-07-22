@@ -1,5 +1,12 @@
 # @nestjs-modules/ioredis
 
+## 2.2.2
+
+### Patch Changes
+
+- ### Other Changes
+  - Add 'call' method to MOCK_REDIS_METHODS ([#308](https://github.com/nest-modules/ioredis/issues/308))
+
 ## 2.2.1
 
 ### Patch Changes
