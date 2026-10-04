@@ -32,7 +32,7 @@ export function createAsyncProviders(
 
   return [
     createAsyncOptionsProvider(options, connection),
-    { provide: options.useClass, useClass: options.useClass },
+    { provide: options.useClass!, useClass: options.useClass! },
   ];
 }
 
@@ -61,6 +61,6 @@ export function createAsyncOptionsProvider(
     ): Promise<RedisModuleOptions> {
       return await optionsFactory.createRedisModuleOptions();
     },
-    inject: [options.useClass || options.useExisting],
+    inject: [(options.useClass || options.useExisting)!],
   };
 }

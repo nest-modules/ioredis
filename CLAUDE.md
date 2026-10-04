@@ -19,6 +19,7 @@ Every time you make changes to the codebase (new features, refactors, architectu
 | `pnpm format` | Format all files with Biome |
 | `pnpm check:fix` | Auto-fix Biome issues |
 | `npx jest` | Run tests in current package |
+| `npx jest --coverage` | Run tests with the 100% coverage gate (what `pnpm test` runs) |
 | `npx tsc --noEmit` | Type-check without emitting |
 
 ---
@@ -68,7 +69,9 @@ lib/
     ├── redis.module.spec.ts              # Public module integration tests
     ├── redis-providers.spec.ts           # Provider factory unit tests
     ├── redis-health.indicator.spec.ts    # Health indicator tests (incl. named connections)
-    └── redis-test.module.spec.ts         # Testing module + mock tests
+    ├── redis-health.module.spec.ts       # Health module + provider wiring
+    ├── redis-test.module.spec.ts         # Testing module + mock tests
+    └── index.spec.ts                     # Public API surface
 ```
 
 ### Module Pattern
@@ -127,22 +130,27 @@ Uses `@nestjs/terminus` with the new `HealthIndicatorService` API (not the depre
 
 ### Graceful Shutdown
 
-`RedisCoreModule` implements `OnApplicationShutdown`. Tracks all connection tokens in a `Set<string>` and calls `quit()` on each during shutdown. Errors during quit are silently caught.
+`RedisCoreModule` implements `OnApplicationShutdown`. Tracks all connection tokens in a static `Set<string>` and calls `quit()` on each during shutdown. Errors during quit are silently caught.
+
+Nest creates one `RedisCoreModule` instance per registered connection and calls the hook on each one. `moduleRef.get` is strict, so every instance only resolves (and quits) its own connection; tokens owned by other instances throw and are skipped. **Never clear or delete from the shared set during shutdown** — instances that shut down later (or other apps registering the same name) would skip their connections and leave the process hanging.
 
 ---
 
 ## Tooling
 
 - **Package manager**: pnpm (v10.32.1)
+  - Security overrides live in root `package.json` → `pnpm.overrides`; run `pnpm audit` after dependency changes
 - **Monorepo**: Turborepo
-- **Linter/formatter**: Biome 2.4.8
+- **Linter/formatter**: Biome 2.5.15
   - Import sorting: external first, then relative (auto-sorted)
   - Single quotes, trailing commas, 2-space indent, 80 line width
   - Decorators enabled (`unsafeParameterDecoratorsEnabled`)
 - **Testing**: Jest 30 + ts-jest
   - Tests in `lib/__tests__/*.spec.ts`
   - `lazyConnect: true` in all tests (no real Redis needed)
-- **TypeScript**: 5.9.3, target ES2021, CommonJS output
+  - 100% statements/branches/functions/lines enforced via `coverageThreshold` in `jest.config.js`; `pnpm test` runs with `--coverage`, so CI fails below 100%
+- **TypeScript**: 6.0.3, target ES2021, CommonJS output
+  - TS 6 defaults apply: `strict` is on, `esModuleInterop` is on, and `types` must be listed explicitly (`["jest"]` in the library, `["node", "jest"]` in samples)
 - **Build**: `tsc` directly (no bundler)
 
 ---
@@ -163,7 +171,7 @@ Uses `@nestjs/terminus` with the new `HealthIndicatorService` API (not the depre
 
 1. **Always run `pnpm check` before committing** — Biome enforces sorted imports, formatting.
 2. **Tests don't need Redis running** — use `lazyConnect: true` in all test fixtures.
-3. **New features need tests** in `lib/__tests__/`.
+3. **New features need tests** in `lib/__tests__/` — coverage must stay at 100%.
 4. **Public API goes through `index.ts`** — never import from internal paths in consuming code.
 5. **Provider logic stays in `providers/`** — modules should be thin orchestrators.
 6. **Use `Set` not `Array` for token tracking** — prevents duplicates on multiple `forRoot` calls.
