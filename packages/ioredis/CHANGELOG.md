@@ -1,5 +1,24 @@
 # @nestjs-modules/ioredis
 
+## 2.3.0
+
+### Minor Changes
+
+- ### Features
+
+  - feat: support NestJS 12
+
+  ### Bug Fixes
+
+  - fix(core): quit every named connection on application shutdown
+
+  ### Other Changes
+
+  - build: declare node types explicitly and test against ioredis 6
+  - build: publish only dist and CHANGELOG.md
+  - chore(deps): update tooling, TypeScript 6 and fix audit vulnerabilities
+  - test: enforce 100% unit test coverage
+
 ## 2.2.2
 
 ### Patch Changes
