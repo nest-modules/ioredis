@@ -17,7 +17,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
     "check": "biome check .",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "keywords": [
     "nest",
