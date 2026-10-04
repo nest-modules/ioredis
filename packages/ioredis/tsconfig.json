@@ -14,7 +14,7 @@
     "outDir": "./dist",
     "rootDir": "./lib",
     "lib": ["ES2021"],
-    "types": ["jest"]
+    "types": ["node", "jest"]
   },
   "include": ["lib/**/*"],
   "exclude": ["node_modules", "dist", "lib/__tests__"]
