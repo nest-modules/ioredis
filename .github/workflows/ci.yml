@@ -33,8 +33,18 @@ jobs:
         run: pnpm run check
 
   test:
-    name: Test
+    name: Test (NestJS ${{ matrix.nest }}, Terminus ${{ matrix.terminus }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - nest: '12'
+            terminus: '12'
+          - nest: '11'
+            terminus: '12'
+          - nest: '11'
+            terminus: '11'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,6 +60,16 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Install NestJS ${{ matrix.nest }} and Terminus ${{ matrix.terminus }}
+        if: matrix.nest != '12' || matrix.terminus != '12'
+        run: >-
+          pnpm --filter @nestjs-modules/ioredis add -D
+          @nestjs/common@^${{ matrix.nest }}
+          @nestjs/core@^${{ matrix.nest }}
+          @nestjs/platform-express@^${{ matrix.nest }}
+          @nestjs/testing@^${{ matrix.nest }}
+          @nestjs/terminus@^${{ matrix.terminus }}
 
       - name: Build
         run: pnpm run build --filter=@nestjs-modules/ioredis
