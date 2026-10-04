@@ -1,5 +1,11 @@
 # @nestjs-modules/ioredis
 
+## 2.3.1
+
+### Patch Changes
+
+- [#314](https://github.com/nest-modules/ioredis/pull/314) [`7b11fee`](https://github.com/nest-modules/ioredis/commit/7b11fee30352dbd91cc7bb66db1890629b0f291c) Thanks [@juandav](https://github.com/juandav)! - Fix the broken NestJS logo in the README (the previous image URL on nestjs.com no longer serves an image).
+
 ## 2.3.0
 
 ### Minor Changes
