@@ -26,6 +26,10 @@ export class RedisCoreModule implements OnApplicationShutdown {
   constructor(private readonly moduleRef: ModuleRef) {}
 
   async onApplicationShutdown(): Promise<void> {
+    // Each registered connection gets its own RedisCoreModule instance, and the
+    // strict `moduleRef.get` only resolves that instance's own connection. The
+    // shared set must not be cleared here, or instances that shut down later
+    // would skip their connections and leave them open.
     for (const token of RedisCoreModule.connectionTokens) {
       try {
         const connection = this.moduleRef.get<Redis>(token);
@@ -34,7 +38,6 @@ export class RedisCoreModule implements OnApplicationShutdown {
         }
       } catch {}
     }
-    RedisCoreModule.connectionTokens.clear();
   }
 
   static forRoot(

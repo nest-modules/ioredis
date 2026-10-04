@@ -90,6 +90,24 @@ describe('redis-connection.util', () => {
       connection.disconnect();
     });
 
+    it('should create a single Redis instance without options', () => {
+      const connection = createRedisConnection({
+        type: 'single',
+        url: 'redis://127.0.0.1:6379',
+      });
+      expect(connection).toBeInstanceOf(Redis);
+      connection.disconnect();
+    });
+
+    it('should create a Redis.Cluster instance without cluster options', () => {
+      const connection = createRedisConnection({
+        type: 'cluster',
+        nodes: [{ host: '127.0.0.1', port: 6379 }],
+      });
+      expect(connection).toBeInstanceOf(Redis.Cluster);
+      connection.disconnect();
+    });
+
     it('should throw for invalid type', () => {
       expect(() => createRedisConnection({ type: 'invalid' } as any)).toThrow(
         'Invalid configuration',

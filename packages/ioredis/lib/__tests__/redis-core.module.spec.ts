@@ -315,5 +315,70 @@ describe('RedisCoreModule', () => {
 
       await expect(app.close()).resolves.not.toThrow();
     });
+
+    it('should skip connections that do not expose quit', async () => {
+      const module = await Test.createTestingModule({
+        imports: [RedisCoreModule.forRoot(REDIS_OPTIONS, 'no-quit')],
+      })
+        .overrideProvider(getRedisConnectionToken('no-quit'))
+        .useValue({})
+        .compile();
+
+      const app = module.createNestApplication();
+      await app.init();
+
+      await expect(app.close()).resolves.not.toThrow();
+    });
+
+    it('should close every named connection when several are registered', async () => {
+      const module = await Test.createTestingModule({
+        imports: [
+          RedisCoreModule.forRoot(REDIS_OPTIONS, 'main'),
+          RedisCoreModule.forRootAsync(
+            { useFactory: () => REDIS_OPTIONS },
+            'subscriber',
+          ),
+        ],
+      }).compile();
+
+      const app = module.createNestApplication();
+      await app.init();
+
+      const main = module.get<Redis>(getRedisConnectionToken('main'));
+      const subscriber = module.get<Redis>(
+        getRedisConnectionToken('subscriber'),
+      );
+      const mainQuit = jest.spyOn(main, 'quit').mockResolvedValue('OK');
+      const subscriberQuit = jest
+        .spyOn(subscriber, 'quit')
+        .mockResolvedValue('OK');
+
+      await app.close();
+
+      expect(mainQuit).toHaveBeenCalledTimes(1);
+      expect(subscriberQuit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should close connections of an app shut down after another one', async () => {
+      const createApp = async () => {
+        const module = await Test.createTestingModule({
+          imports: [RedisCoreModule.forRoot(REDIS_OPTIONS, 'shared')],
+        }).compile();
+        const app = module.createNestApplication();
+        await app.init();
+        const connection = module.get<Redis>(getRedisConnectionToken('shared'));
+        const quit = jest.spyOn(connection, 'quit').mockResolvedValue('OK');
+        return { app, quit };
+      };
+
+      const first = await createApp();
+      const second = await createApp();
+
+      await first.app.close();
+      await second.app.close();
+
+      expect(first.quit).toHaveBeenCalledTimes(1);
+      expect(second.quit).toHaveBeenCalledTimes(1);
+    });
   });
 });
