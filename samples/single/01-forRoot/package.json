@@ -11,16 +11,16 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./e2e/jest-e2e.json"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:cov": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:e2e": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config ./e2e/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "11.2.7",
-    "@nestjs/core": "11.2.7",
+    "@nestjs/common": "12.1.2",
+    "@nestjs/core": "12.1.2",
     "@nestjs-modules/ioredis": "workspace:*",
-    "@nestjs/platform-express": "11.2.7",
+    "@nestjs/platform-express": "12.1.2",
     "class-transformer": "0.5.1",
     "class-validator": "0.15.1",
     "ioredis": "5.10.1",
@@ -29,9 +29,9 @@
     "rxjs": "7.8.2"
   },
   "devDependencies": {
-    "@nestjs/cli": "11.0.24",
-    "@nestjs/schematics": "11.1.0",
-    "@nestjs/testing": "11.2.7",
+    "@nestjs/cli": "12.0.8",
+    "@nestjs/schematics": "12.0.6",
+    "@nestjs/testing": "12.1.2",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
     "@types/node": "25.5.0",

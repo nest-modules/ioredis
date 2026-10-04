@@ -163,7 +163,14 @@ Nest creates one `RedisCoreModule` instance per registered connection and calls 
 - `ioredis` >= 5.0.0
 
 ### Optional Dependencies
-- `@nestjs/terminus` 11.1.1 (only for health checks)
+- `@nestjs/terminus` `^11.1.1 || ^12.1.0` (only for health checks). Kept as a range so npm can dedupe with the app's own Terminus; a pinned version forced Terminus 11 (peer `@nestjs/common ^10 || ^11`) onto NestJS 12 apps.
+
+### NestJS 11 and 12
+- Dev dependencies target NestJS 12 and ioredis 5. CI runs build + unit tests against NestJS 12 + Terminus 12 (ioredis 5 and 6), NestJS 11 + Terminus 12 and NestJS 11 + Terminus 11 (matrix in `.github/workflows/ci.yml`).
+- `@types/node` is a direct dev dependency and listed in `types`: ioredis 6 no longer pulls it in transitively, and NestJS/Terminus typings need it.
+- NestJS 12 and Terminus 12 are ESM-only. The library stays CommonJS and loads them through Node's `require(esm)` (Node 20.19+, 22.12+, 24+).
+- Jest needs `--experimental-vm-modules` to `require` ESM packages, which is why the `test` scripts run `node --experimental-vm-modules node_modules/jest/bin/jest.js`.
+- Import Nest types from the package root (`@nestjs/common`), never deep paths like `@nestjs/common/interfaces`: NestJS 12's `exports` map does not resolve them.
 
 ---
 
