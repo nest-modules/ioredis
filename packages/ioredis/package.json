@@ -46,7 +46,7 @@
     "@nestjs/terminus": "12.1.0",
     "@nestjs/testing": "12.1.2",
     "@types/jest": "30.0.0",
-    "@types/node": "24.19.1",
+    "@types/node": "26.6.4",
     "ioredis": "5.10.1",
     "jest": "30.5.2",
     "reflect-metadata": "0.2.2",
